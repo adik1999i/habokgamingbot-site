@@ -147,6 +147,21 @@
   .chip:hover { color: var(--fg); border-color: #5a3a42; }
   .note { text-align: center; color: var(--muted); font-size: 13px; margin-top: 14px; }
 
+  /* ---------- real moments ---------- */
+  .moment { display: grid; grid-template-columns: auto 1fr; gap: 44px; align-items: center; }
+  .phone { position: relative; width: 300px; aspect-ratio: 9 / 16; border-radius: 34px; padding: 10px;
+           background: linear-gradient(160deg, #3a2328, #120b0d); box-shadow: 0 40px 100px -30px rgba(214,40,63,.55),
+           0 0 0 1px var(--line); }
+  .phone video { width: 100%; height: 100%; border-radius: 26px; display: block; background: #000; object-fit: cover; }
+  .roast-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
+                 font: 800 13px Inter; letter-spacing: .08em; color: #fff;
+                 background: linear-gradient(135deg, #ff6a00, #ff2d55); box-shadow: 0 0 26px rgba(255,90,40,.55); }
+  .moment h3 { font: 700 clamp(24px, 3vw, 32px)/1.2 "Cinzel", Georgia, serif; margin: 16px 0 10px; }
+  .moment p { color: var(--muted); margin: 0 0 12px; }
+  .quote { border-left: 3px solid var(--cyan); padding: 4px 0 4px 14px; margin: 16px 0; color: var(--fg); font-size: 15px; }
+  .quote small { display: block; color: var(--muted); margin-top: 4px; }
+  @media (max-width: 760px) { .moment { grid-template-columns: 1fr; justify-items: center; text-align: left; } }
+
   /* ---------- sections ---------- */
   section { padding: 84px 0 0; }
   .eyebrow { font: 600 12px "JetBrains Mono"; letter-spacing: .14em; color: var(--cyan); text-transform: uppercase; }
@@ -208,6 +223,7 @@
     <a class="brand" href="#"><span class="logo">🎮</span>HabokGamingBot</a>
     <div class="links">
       <a href="#demo">Demo</a>
+      <a href="#moments">Moments</a>
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
       <a href="#commands">Commands</a>
@@ -252,6 +268,28 @@
   </div>
   <p class="note">Demo with scripted example replies — the real bot uses AI live on Habok's streams. Nothing you type here is sent anywhere.</p>
 </header>
+
+<section id="moments">
+  <div class="wrap">
+    <div class="eyebrow">Real moments</div>
+    <h2>Caught live on stream</h2>
+    <p class="sec-lead">Not a demo — a real clip from Habok's Bloodborne stream.</p>
+    <div class="moment">
+      <div class="phone">
+        <video controls playsinline preload="metadata" poster="media/roast-mode.jpg">
+          <source src="media/roast-mode.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div>
+        <span class="roast-badge">🔥 ROAST MODE ON</span>
+        <h3>Chat asked the bot to guide Habok… it roasted him instead 💀</h3>
+        <p>Zerin asked HabokGamingBot for a serious boss guide. The bot had other plans — and Habok read the reply out loud, live.</p>
+        <div class="quote">“Hadi bhai, Habok ko guide karne ka fayda nahi, usko seedha re-install karna padega! 💀😂”<small>— HabokGamingBot, in chat</small></div>
+        <p style="font-size:13px">Swear words beeped. More moments coming soon.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="features">
   <div class="wrap">
