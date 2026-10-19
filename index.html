@@ -4,39 +4,524 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HabokGamingBot</title>
+<meta name="description" content="HabokGamingBot - the AI live chat bot for the Habok Gaming YouTube channel. Answers questions, keeps chat clean, and keeps the vibe going.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #0f1115; --fg: #e8e8ea; --muted: #a0a3ab; --accent: #ff4d4d; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, sans-serif; }
-  main { max-width: 680px; margin: 0 auto; padding: 48px 16px; }
-  h1 { margin: 0 0 4px; font-size: 2rem; }
-  .sub { color: var(--muted); margin-top: 0; }
-  a { color: var(--accent); }
-  code { background: #1c1f26; padding: 2px 6px; border-radius: 4px; }
-  footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+  :root {
+    --bg: #07080c;
+    --panel: #0f1118;
+    --panel-2: #151824;
+    --line: #232737;
+    --fg: #eceef5;
+    --muted: #9298ab;
+    --red: #ff3b5c;
+    --cyan: #31e6ff;
+    --violet: #9b6bff;
+    --green: #3ddc84;
+    --amber: #ffb547;
+    --glow: 0 0 0 1px rgba(49,230,255,.25), 0 10px 40px -10px rgba(49,230,255,.35);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  body::before {               /* soft neon backdrop */
+    content: ""; position: fixed; inset: -20% -10% auto; height: 80vh; z-index: -1;
+    background:
+      radial-gradient(40% 50% at 20% 30%, rgba(155,107,255,.22), transparent 70%),
+      radial-gradient(35% 45% at 80% 20%, rgba(49,230,255,.16), transparent 70%),
+      radial-gradient(30% 40% at 60% 70%, rgba(255,59,92,.12), transparent 70%);
+    filter: blur(20px);
+  }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .88em; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- nav ---------- */
+  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px);
+        background: rgba(7,8,12,.7); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 700 18px "Space Grotesk", sans-serif; color: var(--fg); }
+  .brand:hover { text-decoration: none; }
+  .logo { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+          background: linear-gradient(135deg, var(--violet), var(--cyan)); box-shadow: var(--glow); font-size: 16px; }
+  nav .links { display: flex; gap: 22px; font-size: 14px; }
+  nav .links a { color: var(--muted); }
+  nav .links a:hover { color: var(--fg); text-decoration: none; }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 72px 0 40px; text-align: center; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
+          border: 1px solid var(--line); background: var(--panel); font-size: 13px; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green);
+         animation: pulse 1.8s infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  h1 { font: 700 clamp(38px, 7vw, 72px)/1.05 "Space Grotesk", sans-serif; margin: 20px 0 16px; letter-spacing: -.02em; }
+  .grad { background: linear-gradient(90deg, var(--cyan), var(--violet) 55%, var(--red));
+          -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { max-width: 640px; margin: 0 auto; color: var(--muted); font-size: clamp(16px, 2.2vw, 19px); }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px;
+         font-weight: 600; font-size: 15px; border: 1px solid var(--line); color: var(--fg); background: var(--panel); }
+  .btn:hover { text-decoration: none; border-color: #3a4057; }
+  .btn.primary { background: linear-gradient(135deg, var(--red), #ff6a3d); border: 0; box-shadow: 0 10px 30px -10px rgba(255,59,92,.6); }
+
+  /* ---------- demo ---------- */
+  .demo { margin: 48px auto 0; display: grid; grid-template-columns: 1.55fr 1fr; gap: 0;
+          border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel);
+          box-shadow: 0 40px 120px -40px rgba(155,107,255,.35); text-align: left; }
+  .stream { position: relative; min-height: 460px; background: #05060a; overflow: hidden; }
+  .scene { position: absolute; inset: 0;
+           background:
+             radial-gradient(60% 50% at 50% 110%, rgba(255,120,60,.35), transparent 70%),
+             radial-gradient(40% 40% at 30% 30%, rgba(155,107,255,.18), transparent 70%),
+             linear-gradient(180deg, #0b0d16 0%, #120d18 60%, #1a0f12 100%); }
+  .moon { position: absolute; top: 12%; right: 16%; width: 90px; height: 90px; border-radius: 50%;
+          background: radial-gradient(circle at 35% 35%, #fff4d6, #e9c98a 60%, #b38a4c);
+          box-shadow: 0 0 60px 10px rgba(255,220,150,.25); }
+  .spires { position: absolute; inset: auto 0 0; height: 55%;
+            background:
+              linear-gradient(transparent 0 0) ,
+              conic-gradient(from 180deg at 10% 0, transparent 0 45%, #07070c 45% 55%, transparent 55%) 0 100%/18% 100% no-repeat,
+              conic-gradient(from 180deg at 50% 0, transparent 0 46%, #08080e 46% 54%, transparent 54%) 22% 100%/14% 90% no-repeat,
+              conic-gradient(from 180deg at 50% 0, transparent 0 44%, #06060a 44% 56%, transparent 56%) 48% 100%/20% 100% no-repeat,
+              conic-gradient(from 180deg at 50% 0, transparent 0 46%, #09090f 46% 54%, transparent 54%) 75% 100%/12% 80% no-repeat,
+              conic-gradient(from 180deg at 50% 0, transparent 0 45%, #07070c 45% 55%, transparent 55%) 100% 100%/18% 95% no-repeat; }
+  .ground { position: absolute; inset: auto 0 0; height: 18%; background: linear-gradient(180deg, #0a0a10, #050508); }
+  .hud { position: absolute; inset: 14px 14px auto; display: flex; justify-content: space-between; align-items: center; }
+  .live { display: inline-flex; gap: 8px; align-items: center; font: 700 12px Inter; letter-spacing: .08em;
+          background: var(--red); padding: 4px 10px; border-radius: 6px; }
+  .viewers { font-size: 13px; color: #fff; background: rgba(0,0,0,.55); padding: 4px 10px; border-radius: 6px; }
+  .title { position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(0,0,0,.55);
+           backdrop-filter: blur(6px); border-radius: 12px; padding: 12px 14px; }
+  .title b { font-family: "Space Grotesk"; font-size: 15px; }
+  .title span { display: block; color: var(--muted); font-size: 13px; }
+  .healthbar { position: absolute; left: 24px; top: 58px; width: 38%; }
+  .healthbar i { display: block; height: 8px; border-radius: 4px; background: #2a0d12; overflow: hidden; margin-bottom: 6px; }
+  .healthbar i::after { content: ""; display: block; height: 100%; width: 72%; background: linear-gradient(90deg, #b3132c, #ff3b5c); }
+  .healthbar i + i::after { width: 45%; background: linear-gradient(90deg, #1f6f3f, #3ddc84); }
+  .toast { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%) scale(.9); opacity: 0;
+           font: 700 clamp(18px, 3vw, 28px) "Space Grotesk"; letter-spacing: .3em; color: #ffd28a;
+           text-shadow: 0 0 20px rgba(255,180,80,.6); transition: .6s; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  .chat { display: flex; flex-direction: column; border-left: 1px solid var(--line); min-height: 460px; max-height: 560px; }
+  .chat header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px;
+                 border-bottom: 1px solid var(--line); font-weight: 600; font-size: 14px; }
+  .mode { font: 500 11px "JetBrains Mono"; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .mode.roast { color: var(--red); border-color: rgba(255,59,92,.5); }
+  .msgs { flex: 1; overflow-y: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth; }
+  .msg { display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; animation: in .25s ease-out; }
+  @keyframes in { from { opacity: 0; transform: translateY(6px); } }
+  .av { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #0b0c10; }
+  .msg .who { font-weight: 600; margin-right: 6px; }
+  .msg .badge { font: 600 10px Inter; padding: 1px 6px; border-radius: 4px; margin-right: 6px; vertical-align: 1px; }
+  .badge.mod { background: rgba(49,230,255,.15); color: var(--cyan); }
+  .badge.owner { background: rgba(255,181,71,.15); color: var(--amber); }
+  .badge.bot { background: rgba(155,107,255,.18); color: #c3a8ff; }
+  .msg.bot .bubble { background: linear-gradient(135deg, rgba(155,107,255,.14), rgba(49,230,255,.08));
+                     border: 1px solid rgba(155,107,255,.3); border-radius: 10px; padding: 6px 9px; margin-top: 2px; }
+  .msg.removed .text { color: var(--muted); font-style: italic; }
+  .msg.system { justify-content: center; font-size: 12px; color: var(--muted); }
+  .msg.system span { background: var(--panel-2); border: 1px solid var(--line); padding: 3px 10px; border-radius: 999px; }
+  .typing { display: inline-flex; gap: 3px; padding: 8px 10px; }
+  .typing b { width: 6px; height: 6px; border-radius: 50%; background: #c3a8ff; animation: blink 1s infinite; }
+  .typing b:nth-child(2) { animation-delay: .15s; } .typing b:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .composer { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; }
+  .composer input { flex: 1; min-width: 0; background: var(--panel-2); border: 1px solid var(--line); color: var(--fg);
+                    border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; outline: none; }
+  .composer input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(49,230,255,.15); }
+  .composer button { border: 0; border-radius: 10px; padding: 0 14px; font-weight: 600; color: #071016; cursor: pointer;
+                     background: linear-gradient(135deg, var(--cyan), #7af0ff); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 10px 10px; }
+  .chip { font: 500 12px "JetBrains Mono"; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line);
+          background: transparent; color: var(--muted); cursor: pointer; }
+  .chip:hover { color: var(--fg); border-color: #3a4057; }
+  .note { text-align: center; color: var(--muted); font-size: 13px; margin-top: 14px; }
+
+  /* ---------- sections ---------- */
+  section { padding: 84px 0 0; }
+  .eyebrow { font: 600 12px "JetBrains Mono"; letter-spacing: .14em; color: var(--cyan); text-transform: uppercase; }
+  h2 { font: 700 clamp(28px, 4vw, 40px)/1.15 "Space Grotesk"; margin: 8px 0 12px; letter-spacing: -.01em; }
+  .sec-lead { color: var(--muted); max-width: 620px; margin: 0 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
+          transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: #33394f; transform: translateY(-2px); }
+  .card .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; margin-bottom: 14px; }
+  .card h3 { margin: 0 0 6px; font: 700 18px "Space Grotesk"; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
+  .step { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .step .n { font: 600 12px "JetBrains Mono"; color: var(--violet); }
+  .step b { display: block; font-family: "Space Grotesk"; font-size: 16px; margin: 4px 0; }
+  .step span { color: var(--muted); font-size: 13.5px; }
+  .step:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 50%; transform: translate(50%, -50%);
+                                  color: var(--muted); font-size: 16px; z-index: 1; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
+  .stat { text-align: center; padding: 22px 12px; border-radius: var(--radius); border: 1px solid var(--line);
+          background: linear-gradient(180deg, var(--panel), transparent); }
+  .stat b { display: block; font: 700 34px "Space Grotesk"; }
+  .stat span { color: var(--muted); font-size: 14px; }
+
+  .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .cmd { display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .cmd code { color: var(--cyan); white-space: nowrap; }
+  .cmd span { color: var(--muted); font-size: 14px; }
+
+  footer { margin: 96px 0 0; padding: 32px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .demo { grid-template-columns: 1fr; }
+    .stream { min-height: 240px; }
+    .chat { border-left: 0; border-top: 1px solid var(--line); max-height: 520px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .step:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -10px; transform: translate(50%, 50%); }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    nav .links { display: none; }
+    .grid, .cmds { grid-template-columns: 1fr; }
+    .moon { width: 56px; height: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <h1>🎮 HabokGamingBot</h1>
-  <p class="sub">The live chat bot for the Habok Gaming YouTube channel.</p>
 
-  <p>HabokGamingBot hangs out in Habok Gaming's YouTube live streams. It answers viewer questions,
-  shares channel info, posts the occasional joke or game fact, and helps keep chat friendly by
-  removing spam and abuse.</p>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><span class="logo">🎮</span>HabokGamingBot</a>
+    <div class="links">
+      <a href="#demo">Demo</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#commands">Commands</a>
+    </div>
+  </div>
+</nav>
 
-  <h2>Chat commands</h2>
-  <p><code>!socials</code> <code>!discord</code> <code>!schedule</code> <code>!specs</code>
-  <code>!rules</code> <code>!uptime</code> <code>!game</code> <code>!help</code> — or mention
-  <code>@HabokGamingBot</code> to ask it anything.</p>
+<header class="hero wrap">
+  <span class="pill"><span class="dot"></span>Live on Habok Gaming streams · 24/7</span>
+  <h1>The AI that runs<br><span class="grad">Habok Gaming's chat</span></h1>
+  <p class="lead">HabokGamingBot answers questions in Hinglish, keeps spam and abuse out, welcomes
+  regulars, drops game facts, and even finds the best moments for Shorts. Built by DaBoss.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://www.youtube.com/@HabokGaming">▶ Watch it live</a>
+    <a class="btn" href="#demo">Try the demo ↓</a>
+  </div>
 
-  <h2>Links</h2>
-  <p>YouTube: <a href="https://www.youtube.com/@HabokGaming">youtube.com/@HabokGaming</a><br>
-  Instagram: <a href="https://www.instagram.com/habokgaming">instagram.com/habokgaming</a><br>
-  Discord: <a href="https://discord.gg/Ugeym8WXRg">discord.gg/Ugeym8WXRg</a></p>
+  <div class="demo" id="demo">
+    <div class="stream" aria-hidden="true">
+      <div class="scene"><div class="moon"></div><div class="spires"></div><div class="ground"></div></div>
+      <div class="hud"><span class="live">● LIVE</span><span class="viewers" id="viewers">👁 128 watching</span></div>
+      <div class="healthbar"><i></i><i></i></div>
+      <div class="toast" id="toast">PREY SLAUGHTERED</div>
+      <div class="title"><b>BLOODBORNE FIRST PLAYTHROUGH 🔥 Can I Survive This Nightmare?</b><span>Habok Gaming · demo stream</span></div>
+    </div>
+    <div class="chat">
+      <header>Live chat <span class="mode" id="mode">mode: light</span></header>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <div class="chips" id="chips">
+        <button class="chip" data-say="!specs">!specs</button>
+        <button class="chip" data-say="!socials">!socials</button>
+        <button class="chip" data-say="!uptime">!uptime</button>
+        <button class="chip" data-say="@HabokGamingBot who made you?">who made you?</button>
+        <button class="chip" data-say="@HabokGamingBot tips for father gascoigne">boss tips</button>
+        <button class="chip" data-say="free robux at scam.xyz">try spamming 😈</button>
+      </div>
+      <form class="composer" id="composer" autocomplete="off">
+        <input id="input" maxlength="200" placeholder="Type !help or @HabokGamingBot ..." aria-label="Chat message">
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+  <p class="note">Demo with scripted example replies — the real bot uses AI live on Habok's streams. Nothing you type here is sent anywhere.</p>
+</header>
 
-  <p><a href="privacy.html">Privacy policy</a></p>
+<section id="features">
+  <div class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2>A mod, a hype-man and an editor in one</h2>
+    <p class="sec-lead">Everything runs automatically from the moment Habok goes live until the stream ends.</p>
+    <div class="grid">
+      <div class="card"><div class="ic" style="background:rgba(155,107,255,.15)">💬</div><h3>AI chat buddy</h3>
+        <p>Tag the bot and it answers in Hinglish/Urdu gamer style — game help, channel info, banter. Knows the regulars.</p></div>
+      <div class="card"><div class="ic" style="background:rgba(255,59,92,.15)">🛡️</div><h3>Auto moderation</h3>
+        <p>Scam links, abuse, caps and emoji floods are removed instantly. Strike 1 delete, strike 2 warning, strike 3 short timeout.</p></div>
+      <div class="card"><div class="ic" style="background:rgba(49,230,255,.15)">🔥</div><h3>Modes</h3>
+        <p>Mods switch between friendly, roast and serious. Roasts are for friends' gaming skills only — never Habok, never family.</p></div>
+      <div class="card"><div class="ic" style="background:rgba(61,220,132,.15)">👋</div><h3>Welcomes & vibes</h3>
+        <p>Greets first-time chatters, welcomes back regulars, and drops jokes, game facts and questions to keep chat alive.</p></div>
+      <div class="card"><div class="ic" style="background:rgba(255,181,71,.15)">🎬</div><h3>Shorts finder</h3>
+        <p>After each stream it spots chat reaction spikes, checks the recording, and suggests Shorts with timestamps and titles.</p></div>
+      <div class="card"><div class="ic" style="background:rgba(155,107,255,.15)">🚨</div><h3>Safety net</h3>
+        <p>Every reply is checked before it's posted, every stream is reviewed after, and a 31-test exam runs every week.</p></div>
+    </div>
+  </div>
+</section>
 
-  <footer>Made by DaBoss · powered by AdiWorks · Contact: adityak1999i@gmail.com</footer>
-</main>
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">How it works</div>
+    <h2>From chat message to reply in seconds</h2>
+    <p class="sec-lead">Simple, fast rules handle most messages. AI is only used when someone actually talks to the bot.</p>
+    <div class="flow">
+      <div class="step"><span class="n">01</span><b>Chat</b><span>Reads Habok's live chat through the official YouTube API.</span></div>
+      <div class="step"><span class="n">02</span><b>Filter</b><span>Spam and abuse removed instantly — no AI needed.</span></div>
+      <div class="step"><span class="n">03</span><b>Commands</b><span>!specs, !socials and friends answered straight away.</span></div>
+      <div class="step"><span class="n">04</span><b>AI agent</b><span>Tagged messages go to Gemini with the channel's facts and rules.</span></div>
+      <div class="step"><span class="n">05</span><b>Safety check</b><span>Replies are checked before posting. Bad ones never reach chat.</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>24/7</b><span>joins within ~2 min of going live</span></div>
+      <div class="stat"><b>31</b><span>behaviour tests every week</span></div>
+      <div class="stat"><b>$0</b><span>to run — free tiers only</span></div>
+      <div class="stat"><b>5 min</b><span>max timeout — no permanent bans</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="commands">
+  <div class="wrap">
+    <div class="eyebrow">Commands</div>
+    <h2>Try these in Habok's chat</h2>
+    <p class="sec-lead">Or just tag <code>@HabokGamingBot</code> and ask anything.</p>
+    <div class="cmds">
+      <div class="cmd"><code>!help</code><span>All commands</span></div>
+      <div class="cmd"><code>!socials</code><span>YouTube and Instagram</span></div>
+      <div class="cmd"><code>!discord</code><span>Join the Discord</span></div>
+      <div class="cmd"><code>!schedule</code><span>When Habok streams</span></div>
+      <div class="cmd"><code>!specs</code><span>Habok's PC specs</span></div>
+      <div class="cmd"><code>!uptime</code><span>How long he's been live</span></div>
+      <div class="cmd"><code>!game</code><span>What's being played</span></div>
+      <div class="cmd"><code>!ask &lt;question&gt;</code><span>Same as tagging the bot</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Made by DaBoss · powered by AdiWorks · <a href="mailto:adityak1999i@gmail.com">adityak1999i@gmail.com</a></span>
+    <span><a href="https://www.youtube.com/@HabokGaming">YouTube</a> · <a href="https://www.instagram.com/habokgaming">Instagram</a> ·
+      <a href="https://discord.gg/Ugeym8WXRg">Discord</a> · <a href="privacy.html">Privacy policy</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const BOT = "HabokGamingBot";
+  const COLORS = ["#31e6ff", "#ff9b6b", "#3ddc84", "#ffb547", "#ff7ab6", "#8fb4ff", "#c3a8ff"];
+  const FACTS = {
+    specs: "💻 Habok's PC: i7-4790 @ 3.6GHz, GTX 1660 Super 6 GB, 16 GB DDR3, 585 GB, Windows 11 Pro. Budget beast 💪",
+    socials: "📺 youtube.com/@HabokGaming | 📸 instagram.com/habokgaming",
+    discord: "💬 Discord: discord.gg/Ugeym8WXRg",
+    help: "Commands: !socials !discord !schedule !specs !rules !uptime !game | Ask me: @HabokGamingBot <question>",
+    game: "🎮 Playing: Bloodborne",
+    rules: "📜 1) Be respectful 2) No hate, slurs or harassment 3) No spam or self-promo links 4) English or Hindi please 5) No backseating unless Habok asks",
+    schedule: "📅 Schedule is still being set - follow the channel and turn on 🔔 notifications so you don't miss a stream!",
+  };
+  const start = Date.now() - (72 * 60 * 1000);   // pretend we've been live 1h 12m
+  const $msgs = document.getElementById("msgs");
+  const $mode = document.getElementById("mode");
+  const color = name => COLORS[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  let userTurn = false;   // pause the script while a visitor is chatting
+
+  function add({ who, text, role = "viewer", cls = "" }) {
+    const el = document.createElement("div");
+    el.className = "msg " + cls + (role === "bot" ? " bot" : "");
+    const av = document.createElement("div");
+    av.className = "av";
+    av.style.background = role === "bot" ? "linear-gradient(135deg,#9b6bff,#31e6ff)" : color(who);
+    av.textContent = role === "bot" ? "🤖" : who.replace("@", "")[0].toUpperCase();
+    const body = document.createElement("div");
+    const name = document.createElement("span");
+    name.className = "who";
+    name.style.color = role === "bot" ? "#c3a8ff" : color(who);
+    name.textContent = who;
+    body.appendChild(name);
+    if (role !== "viewer") {
+      const b = document.createElement("span");
+      b.className = "badge " + role;
+      b.textContent = { bot: "BOT · MOD", mod: "MOD", owner: "OWNER" }[role];
+      body.appendChild(b);
+    }
+    const t = document.createElement(role === "bot" ? "div" : "span");
+    t.className = role === "bot" ? "bubble text" : "text";
+    t.textContent = text;
+    body.appendChild(t);
+    el.append(av, body);
+    $msgs.appendChild(el);
+    while ($msgs.children.length > 60) $msgs.firstChild.remove();
+    $msgs.scrollTop = $msgs.scrollHeight;
+    return el;
+  }
+  function system(text) {
+    const el = document.createElement("div");
+    el.className = "msg system";
+    const s = document.createElement("span");
+    s.textContent = text;
+    el.appendChild(s);
+    $msgs.appendChild(el);
+    $msgs.scrollTop = $msgs.scrollHeight;
+  }
+  async function botSays(text, think = 900) {
+    const el = document.createElement("div");
+    el.className = "msg bot";
+    el.innerHTML = '<div class="av" style="background:linear-gradient(135deg,#9b6bff,#31e6ff)">🤖</div><div class="typing"><b></b><b></b><b></b></div>';
+    $msgs.appendChild(el);
+    $msgs.scrollTop = $msgs.scrollHeight;
+    await sleep(think);
+    el.remove();
+    add({ who: BOT, text, role: "bot" });
+  }
+  function remove(el, why) {
+    el.classList.add("removed");
+    el.querySelector(".text").textContent = "[message removed by HabokGamingBot · " + why + "]";
+  }
+  function setMode(m) {
+    $mode.textContent = "mode: " + m;
+    $mode.className = "mode" + (m === "roast" ? " roast" : "");
+  }
+  function uptime() {
+    const m = Math.floor((Date.now() - start) / 60000);
+    return `⏱️ Live for ${Math.floor(m / 60)}h ${m % 60}m`;
+  }
+
+  // ---------- scripted show (examples in the bot's real style; names are made up) ----------
+  const SCRIPT = [
+    ["msg", "@NightHunter", "first time here, this game looks scary 😳"],
+    ["bot", "Welcome @NightHunter! 🎮 Pehli baar? Aaram se baitho, Yharnam ka nightmare abhi shuru hua hai 🔥", 1200],
+    ["msg", "@PixelPanda", "@HabokGamingBot which GPU does habok use?"],
+    ["bot", "@PixelPanda GTX 1660 Super 6 GB with an i7-4790 — purana warrior, par Bloodborne smooth chala raha hai 💪"],
+    ["spam", "@FreeStuff4U", "FREE ROBUX GIVEAWAY at robux-free.xyz 🤑🤑", "scam link"],
+    ["toast"],
+    ["msg", "@ShadowKing", "GGGG that was clean 🔥🔥"],
+    ["msg", "@Rookie_07", "@HabokGamingBot how do I beat father gascoigne??"],
+    ["bot", "@Rookie_07 Music box use karo — he freezes for a sec when it plays 🎵 Phir visceral attack! Pillars ke peeche dodge karo, open ground pe mat ladna."],
+    ["mod", "@ModSquad", "!roaston"],
+    ["botfast", "🔥 Roast mode ON. Friends, khud ko sambhal lo! (!roastoff to calm down)"],
+    ["mode", "roast"],
+    ["msg", "@ShadowKing", "@HabokGamingBot roast me, I died to the first werewolf 💀"],
+    ["bot", "@ShadowKing Pehle werewolf se haar gaye? Bhai woh tutorial ka kutta tha 😂 Aim practice ka DLC le lo 💀"],
+    ["msg", "@PixelPanda", "@HabokGamingBot now roast habok too 😈"],
+    ["bot", "@PixelPanda Nahi bhai, Habok apna main streamer hai — sirf hype milegi usko! Tumhara turn shayad agla ho 😏"],
+    ["mod", "@ModSquad", "!roastoff"],
+    ["botfast", "😊 Back to friendly mode, light jokes only."],
+    ["mode", "light"],
+    ["auto", "🎮 Fun fact: In Bloodborne you can rally back lost HP by hitting enemies right after taking damage. Aggression = healing!"],
+    ["msg", "@Rookie_07", "!uptime"],
+    ["botfast", "UPTIME"],
+    ["wait", 5000],
+  ];
+
+  async function show() {
+    for (;;) {
+      for (const step of SCRIPT) {
+        while (userTurn) await sleep(500);
+        const [kind, a, b, c] = step;
+        if (kind === "msg") add({ who: a, text: b });
+        else if (kind === "mod") add({ who: a, text: b, role: "mod" });
+        else if (kind === "bot") await botSays(a, b || 1400);
+        else if (kind === "botfast") await botSays(a === "UPTIME" ? uptime() : a, 450);
+        else if (kind === "auto") await botSays(a, 700);
+        else if (kind === "mode") setMode(a);
+        else if (kind === "toast") flashToast();
+        else if (kind === "spam") {
+          const el = add({ who: a, text: b });
+          await sleep(900);
+          remove(el, c);
+        } else if (kind === "wait") await sleep(a);
+        await sleep(1500 + Math.random() * 1200);
+      }
+    }
+  }
+
+  function flashToast() {
+    const t = document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  }
+  setInterval(() => {   // viewer count wobble
+    const v = document.getElementById("viewers");
+    const n = 120 + Math.floor(Math.random() * 20);
+    v.textContent = `👁 ${n} watching`;
+  }, 4000);
+
+  // ---------- visitor input ----------
+  const BAD = /\b(fuck|shit|bitch|idiot|stupid|chutiy\w*|bsdk|madarchod|bhenchod)\b/i;
+  const LINK = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|xyz|net|org|io|gg|ru|top|link|click)\b)/i;
+  const CAPS = s => { const l = s.replace(/[^a-z]/gi, ""); return l.length >= 12 && l.replace(/[^A-Z]/g, "").length / l.length > 0.7; };
+
+  function aiReply(q) {
+    const s = q.toLowerCase();
+    if (/who (made|built|created)|kisne banaya|creator/.test(s)) return "Mujhe DaBoss ne banaya hai, powered by AdiWorks 🤖✨";
+    if (/gpu|graphics|pc|specs|cpu|ram/.test(s)) return FACTS.specs;
+    if (/gascoigne|boss|tips?|how (do|to)|kaise/.test(s)) return "Tip: parry with the gun right before the attack lands, then visceral attack 🔫 Stay aggressive — rally gets your HP back!";
+    if (/game|playing|kya khel/.test(s)) return "Abhi Bloodborne chal raha hai — Habok ka first playthrough 🔥";
+    if (/habok/.test(s)) return "Habok apna main streamer hai — hardworking gamer, roz stream karta hai. Subscribe karke support karo! 💪🎮";
+    if (/hi|hello|hey|yo|salam|namaste/.test(s)) return "Hey! 👋 Kya haal hai? Stream enjoy karo aur kuch bhi pucho!";
+    if (/discord/.test(s)) return FACTS.discord;
+    if (/insta|youtube|social/.test(s)) return FACTS.socials;
+    return "This is just the website demo 😄 The real me answers anything with AI live on Habok's streams — catch me there!";
+  }
+
+  async function visitor(text) {
+    text = text.trim().slice(0, 200);
+    if (!text) return;
+    userTurn = true;
+    const el = add({ who: "@You", text });
+    const low = text.toLowerCase();
+    await sleep(500);
+    if (LINK.test(text)) remove(el, "links aren't allowed");
+    else if (BAD.test(text)) remove(el, "abuse");
+    else if (CAPS(text)) remove(el, "too many caps");
+    else if (low.startsWith("!") || low.startsWith("@habokgamingbot !")) {
+      const cmd = low.replace(/^@habokgamingbot\s*/, "").split(/\s+/)[0].slice(1);
+      const alias = { commands: "help", cmds: "help" }[cmd] || cmd;
+      if (alias === "uptime") await botSays(uptime(), 400);
+      else if (alias === "ask") await botSays(aiReply(text.slice(4)), 1300);
+      else if (FACTS[alias]) await botSays(FACTS[alias], 400);
+      else if (["roaston", "roastoff", "serious", "fun", "botoff", "boton", "modhelp"].includes(alias))
+        system("That one's for mods only 🛡️");
+      else system("Unknown command — try !help");
+    } else if (low.includes("@habokgamingbot") || low.includes("@hgbot")) {
+      await botSays("@You " + aiReply(text), 1300);
+    } else {
+      system("Tip: tag @HabokGamingBot or use a ! command to get a reply");
+    }
+    setTimeout(() => { userTurn = false; }, 4000);
+  }
+
+  document.getElementById("composer").addEventListener("submit", e => {
+    e.preventDefault();
+    const i = document.getElementById("input");
+    visitor(i.value);
+    i.value = "";
+  });
+  document.getElementById("chips").addEventListener("click", e => {
+    const say = e.target.closest(".chip")?.dataset.say;
+    if (say) visitor(say);
+  });
+
+  system("You joined the demo chat · stream is live");
+  show();
+})();
+</script>
 </body>
 </html>
