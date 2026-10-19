@@ -7,21 +7,21 @@
 <meta name="description" content="HabokGamingBot - the AI live chat bot for the Habok Gaming YouTube channel. Answers questions, keeps chat clean, and keeps the vibe going.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #07080c;
-    --panel: #0f1118;
-    --panel-2: #151824;
-    --line: #232737;
-    --fg: #eceef5;
-    --muted: #9298ab;
+    --bg: #0a0708;
+    --panel: #140d0f;
+    --panel-2: #1c1214;
+    --line: #33222a;
+    --fg: #f3ece4;
+    --muted: #a8999b;
     --red: #ff3b5c;
-    --cyan: #31e6ff;
-    --violet: #9b6bff;
+    --cyan: #e2b55f;
+    --violet: #d6283f;
     --green: #3ddc84;
     --amber: #ffb547;
-    --glow: 0 0 0 1px rgba(49,230,255,.25), 0 10px 40px -10px rgba(49,230,255,.35);
+    --glow: 0 0 0 1px rgba(226,181,95,.25), 0 10px 40px -10px rgba(226,181,95,.35);
     --radius: 16px;
   }
   * { box-sizing: border-box; }
@@ -34,8 +34,8 @@
   body::before {               /* soft neon backdrop */
     content: ""; position: fixed; inset: -20% -10% auto; height: 80vh; z-index: -1;
     background:
-      radial-gradient(40% 50% at 20% 30%, rgba(155,107,255,.22), transparent 70%),
-      radial-gradient(35% 45% at 80% 20%, rgba(49,230,255,.16), transparent 70%),
+      radial-gradient(40% 50% at 20% 30%, rgba(214,40,63,.22), transparent 70%),
+      radial-gradient(35% 45% at 80% 20%, rgba(226,181,95,.16), transparent 70%),
       radial-gradient(30% 40% at 60% 70%, rgba(255,59,92,.12), transparent 70%);
     filter: blur(20px);
   }
@@ -48,7 +48,7 @@
   nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px);
         background: rgba(7,8,12,.7); border-bottom: 1px solid var(--line); }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-  .brand { display: flex; align-items: center; gap: 10px; font: 700 18px "Space Grotesk", sans-serif; color: var(--fg); }
+  .brand { display: flex; align-items: center; gap: 10px; font: 700 18px "Cinzel", Georgia, serif; color: var(--fg); }
   .brand:hover { text-decoration: none; }
   .logo { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
           background: linear-gradient(135deg, var(--violet), var(--cyan)); box-shadow: var(--glow); font-size: 16px; }
@@ -63,25 +63,25 @@
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green);
          animation: pulse 1.8s infinite; }
   @keyframes pulse { 50% { opacity: .35; } }
-  h1 { font: 700 clamp(38px, 7vw, 72px)/1.05 "Space Grotesk", sans-serif; margin: 20px 0 16px; letter-spacing: -.02em; }
+  h1 { font: 800 clamp(34px, 6.2vw, 66px)/1.08 "Cinzel", Georgia, serif; margin: 20px 0 16px; letter-spacing: .01em; }
   .grad { background: linear-gradient(90deg, var(--cyan), var(--violet) 55%, var(--red));
           -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lead { max-width: 640px; margin: 0 auto; color: var(--muted); font-size: clamp(16px, 2.2vw, 19px); }
   .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
   .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px;
          font-weight: 600; font-size: 15px; border: 1px solid var(--line); color: var(--fg); background: var(--panel); }
-  .btn:hover { text-decoration: none; border-color: #3a4057; }
+  .btn:hover { text-decoration: none; border-color: #5a3a42; }
   .btn.primary { background: linear-gradient(135deg, var(--red), #ff6a3d); border: 0; box-shadow: 0 10px 30px -10px rgba(255,59,92,.6); }
 
   /* ---------- demo ---------- */
   .demo { margin: 48px auto 0; display: grid; grid-template-columns: 1.55fr 1fr; gap: 0;
           border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel);
-          box-shadow: 0 40px 120px -40px rgba(155,107,255,.35); text-align: left; }
+          box-shadow: 0 40px 120px -40px rgba(214,40,63,.35); text-align: left; }
   .stream { position: relative; min-height: 460px; background: #05060a; overflow: hidden; }
   .scene { position: absolute; inset: 0;
            background:
              radial-gradient(60% 50% at 50% 110%, rgba(255,120,60,.35), transparent 70%),
-             radial-gradient(40% 40% at 30% 30%, rgba(155,107,255,.18), transparent 70%),
+             radial-gradient(40% 40% at 30% 30%, rgba(214,40,63,.18), transparent 70%),
              linear-gradient(180deg, #0b0d16 0%, #120d18 60%, #1a0f12 100%); }
   .moon { position: absolute; top: 12%; right: 16%; width: 90px; height: 90px; border-radius: 50%;
           background: radial-gradient(circle at 35% 35%, #fff4d6, #e9c98a 60%, #b38a4c);
@@ -101,14 +101,14 @@
   .viewers { font-size: 13px; color: #fff; background: rgba(0,0,0,.55); padding: 4px 10px; border-radius: 6px; }
   .title { position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(0,0,0,.55);
            backdrop-filter: blur(6px); border-radius: 12px; padding: 12px 14px; }
-  .title b { font-family: "Space Grotesk"; font-size: 15px; }
+  .title b { font-family: "Cinzel", Georgia, serif; font-size: 15px; }
   .title span { display: block; color: var(--muted); font-size: 13px; }
   .healthbar { position: absolute; left: 24px; top: 58px; width: 38%; }
   .healthbar i { display: block; height: 8px; border-radius: 4px; background: #2a0d12; overflow: hidden; margin-bottom: 6px; }
   .healthbar i::after { content: ""; display: block; height: 100%; width: 72%; background: linear-gradient(90deg, #b3132c, #ff3b5c); }
   .healthbar i + i::after { width: 45%; background: linear-gradient(90deg, #1f6f3f, #3ddc84); }
   .toast { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%) scale(.9); opacity: 0;
-           font: 700 clamp(18px, 3vw, 28px) "Space Grotesk"; letter-spacing: .3em; color: #ffd28a;
+           font: 700 clamp(18px, 3vw, 28px) "Cinzel", Georgia, serif; letter-spacing: .3em; color: #ffd28a;
            text-shadow: 0 0 20px rgba(255,180,80,.6); transition: .6s; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
@@ -123,47 +123,47 @@
   .av { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #0b0c10; }
   .msg .who { font-weight: 600; margin-right: 6px; }
   .msg .badge { font: 600 10px Inter; padding: 1px 6px; border-radius: 4px; margin-right: 6px; vertical-align: 1px; }
-  .badge.mod { background: rgba(49,230,255,.15); color: var(--cyan); }
+  .badge.mod { background: rgba(226,181,95,.15); color: var(--cyan); }
   .badge.owner { background: rgba(255,181,71,.15); color: var(--amber); }
-  .badge.bot { background: rgba(155,107,255,.18); color: #c3a8ff; }
-  .msg.bot .bubble { background: linear-gradient(135deg, rgba(155,107,255,.14), rgba(49,230,255,.08));
-                     border: 1px solid rgba(155,107,255,.3); border-radius: 10px; padding: 6px 9px; margin-top: 2px; }
+  .badge.bot { background: rgba(214,40,63,.18); color: #f0c987; }
+  .msg.bot .bubble { background: linear-gradient(135deg, rgba(214,40,63,.14), rgba(226,181,95,.08));
+                     border: 1px solid rgba(214,40,63,.3); border-radius: 10px; padding: 6px 9px; margin-top: 2px; }
   .msg.removed .text { color: var(--muted); font-style: italic; }
   .msg.system { justify-content: center; font-size: 12px; color: var(--muted); }
   .msg.system span { background: var(--panel-2); border: 1px solid var(--line); padding: 3px 10px; border-radius: 999px; }
   .typing { display: inline-flex; gap: 3px; padding: 8px 10px; }
-  .typing b { width: 6px; height: 6px; border-radius: 50%; background: #c3a8ff; animation: blink 1s infinite; }
+  .typing b { width: 6px; height: 6px; border-radius: 50%; background: #f0c987; animation: blink 1s infinite; }
   .typing b:nth-child(2) { animation-delay: .15s; } .typing b:nth-child(3) { animation-delay: .3s; }
   @keyframes blink { 50% { opacity: .25; } }
   .composer { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; }
   .composer input { flex: 1; min-width: 0; background: var(--panel-2); border: 1px solid var(--line); color: var(--fg);
                     border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; outline: none; }
-  .composer input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(49,230,255,.15); }
+  .composer input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(226,181,95,.15); }
   .composer button { border: 0; border-radius: 10px; padding: 0 14px; font-weight: 600; color: #071016; cursor: pointer;
-                     background: linear-gradient(135deg, var(--cyan), #7af0ff); }
+                     background: linear-gradient(135deg, var(--cyan), #f5d590); }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 10px 10px; }
   .chip { font: 500 12px "JetBrains Mono"; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line);
           background: transparent; color: var(--muted); cursor: pointer; }
-  .chip:hover { color: var(--fg); border-color: #3a4057; }
+  .chip:hover { color: var(--fg); border-color: #5a3a42; }
   .note { text-align: center; color: var(--muted); font-size: 13px; margin-top: 14px; }
 
   /* ---------- sections ---------- */
   section { padding: 84px 0 0; }
   .eyebrow { font: 600 12px "JetBrains Mono"; letter-spacing: .14em; color: var(--cyan); text-transform: uppercase; }
-  h2 { font: 700 clamp(28px, 4vw, 40px)/1.15 "Space Grotesk"; margin: 8px 0 12px; letter-spacing: -.01em; }
+  h2 { font: 700 clamp(28px, 4vw, 40px)/1.15 "Cinzel", Georgia, serif; margin: 8px 0 12px; letter-spacing: -.01em; }
   .sec-lead { color: var(--muted); max-width: 620px; margin: 0 0 32px; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
           transition: border-color .2s, transform .2s; }
-  .card:hover { border-color: #33394f; transform: translateY(-2px); }
+  .card:hover { border-color: #4a2f37; transform: translateY(-2px); }
   .card .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; margin-bottom: 14px; }
-  .card h3 { margin: 0 0 6px; font: 700 18px "Space Grotesk"; }
+  .card h3 { margin: 0 0 6px; font: 700 18px "Cinzel", Georgia, serif; }
   .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
 
   .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
   .step { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
   .step .n { font: 600 12px "JetBrains Mono"; color: var(--violet); }
-  .step b { display: block; font-family: "Space Grotesk"; font-size: 16px; margin: 4px 0; }
+  .step b { display: block; font-family: "Cinzel", Georgia, serif; font-size: 16px; margin: 4px 0; }
   .step span { color: var(--muted); font-size: 13.5px; }
   .step:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 50%; transform: translate(50%, -50%);
                                   color: var(--muted); font-size: 16px; z-index: 1; }
@@ -171,7 +171,7 @@
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
   .stat { text-align: center; padding: 22px 12px; border-radius: var(--radius); border: 1px solid var(--line);
           background: linear-gradient(180deg, var(--panel), transparent); }
-  .stat b { display: block; font: 700 34px "Space Grotesk"; }
+  .stat b { display: block; font: 700 34px "Cinzel", Georgia, serif; }
   .stat span { color: var(--muted); font-size: 14px; }
 
   .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -259,17 +259,17 @@
     <h2>A mod, a hype-man and an editor in one</h2>
     <p class="sec-lead">Everything runs automatically from the moment Habok goes live until the stream ends.</p>
     <div class="grid">
-      <div class="card"><div class="ic" style="background:rgba(155,107,255,.15)">💬</div><h3>AI chat buddy</h3>
+      <div class="card"><div class="ic" style="background:rgba(214,40,63,.15)">💬</div><h3>AI chat buddy</h3>
         <p>Tag the bot and it answers in Hinglish/Urdu gamer style — game help, channel info, banter. Knows the regulars.</p></div>
       <div class="card"><div class="ic" style="background:rgba(255,59,92,.15)">🛡️</div><h3>Auto moderation</h3>
         <p>Scam links, abuse, caps and emoji floods are removed instantly. Strike 1 delete, strike 2 warning, strike 3 short timeout.</p></div>
-      <div class="card"><div class="ic" style="background:rgba(49,230,255,.15)">🔥</div><h3>Modes</h3>
+      <div class="card"><div class="ic" style="background:rgba(226,181,95,.15)">🔥</div><h3>Modes</h3>
         <p>Mods switch between friendly, roast and serious. Roasts are for friends' gaming skills only — never Habok, never family.</p></div>
       <div class="card"><div class="ic" style="background:rgba(61,220,132,.15)">👋</div><h3>Welcomes & vibes</h3>
         <p>Greets first-time chatters, welcomes back regulars, and drops jokes, game facts and questions to keep chat alive.</p></div>
       <div class="card"><div class="ic" style="background:rgba(255,181,71,.15)">🎬</div><h3>Shorts finder</h3>
         <p>After each stream it spots chat reaction spikes, checks the recording, and suggests Shorts with timestamps and titles.</p></div>
-      <div class="card"><div class="ic" style="background:rgba(155,107,255,.15)">🚨</div><h3>Safety net</h3>
+      <div class="card"><div class="ic" style="background:rgba(214,40,63,.15)">🚨</div><h3>Safety net</h3>
         <p>Every reply is checked before it's posted, every stream is reviewed after, and a 31-test exam runs every week.</p></div>
     </div>
   </div>
@@ -325,7 +325,7 @@
 <script>
 (() => {
   const BOT = "HabokGamingBot";
-  const COLORS = ["#31e6ff", "#ff9b6b", "#3ddc84", "#ffb547", "#ff7ab6", "#8fb4ff", "#c3a8ff"];
+  const COLORS = ["#e2b55f", "#ff9b6b", "#3ddc84", "#ffb547", "#ff7ab6", "#8fb4ff", "#f0c987"];
   const FACTS = {
     specs: "💻 Habok's PC: i7-4790 @ 3.6GHz, GTX 1660 Super 6 GB, 16 GB DDR3, 585 GB, Windows 11 Pro. Budget beast 💪",
     socials: "📺 youtube.com/@HabokGaming | 📸 instagram.com/habokgaming",
@@ -347,12 +347,12 @@
     el.className = "msg " + cls + (role === "bot" ? " bot" : "");
     const av = document.createElement("div");
     av.className = "av";
-    av.style.background = role === "bot" ? "linear-gradient(135deg,#9b6bff,#31e6ff)" : color(who);
+    av.style.background = role === "bot" ? "linear-gradient(135deg,#b3122e,#e2b55f)" : color(who);
     av.textContent = role === "bot" ? "🤖" : who.replace("@", "")[0].toUpperCase();
     const body = document.createElement("div");
     const name = document.createElement("span");
     name.className = "who";
-    name.style.color = role === "bot" ? "#c3a8ff" : color(who);
+    name.style.color = role === "bot" ? "#f0c987" : color(who);
     name.textContent = who;
     body.appendChild(name);
     if (role !== "viewer") {
@@ -383,7 +383,7 @@
   async function botSays(text, think = 900) {
     const el = document.createElement("div");
     el.className = "msg bot";
-    el.innerHTML = '<div class="av" style="background:linear-gradient(135deg,#9b6bff,#31e6ff)">🤖</div><div class="typing"><b></b><b></b><b></b></div>';
+    el.innerHTML = '<div class="av" style="background:linear-gradient(135deg,#b3122e,#e2b55f)">🤖</div><div class="typing"><b></b><b></b><b></b></div>';
     $msgs.appendChild(el);
     $msgs.scrollTop = $msgs.scrollHeight;
     await sleep(think);
